@@ -11,11 +11,10 @@ const app = express()
 app.use(express.json());
 app.use(cors());
 
-app.use('/api/user',userRouter);
-app.use('/api/image',gntImageRouter);
-
 connectDB();
 
+app.use('/api/user',userRouter);
+app.use('/api/image',gntImageRouter);
 app.get('/',(req,res)=>{
     res.send("API is working!")
 })
