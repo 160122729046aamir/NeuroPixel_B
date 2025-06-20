@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import jwt from 'jsonwebtoken';
 import razorpay from 'razorpay';
 import Transaction from "../models/transactionModel.js";
+import bcrypt from 'bcrypt';
 
 export const registerUser = async (req,res) => {
 try {
@@ -40,6 +41,10 @@ export const loginUser = async (req,res) =>{
         const user = await User.findOne({email});
         if (!user){
             return res.status(401).json({message:"User doesn't exists with current mail Id!"})
+        }
+        const isPasswordMatched = await bcrypt.compare(password,user.password);
+        if (!isPasswordMatched){
+            return res.status(401).json({success:false,message:"Incorrect password!"})
         }
         const token = jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:'7d'})
         return res.status(201).json({
